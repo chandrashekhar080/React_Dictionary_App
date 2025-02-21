@@ -1,32 +1,49 @@
 import { useEffect, useState, Fragment } from "react";
-import { Stack, Box, IconButton, Typography, Divider } from "@mui/material";
+import { Stack, Box, IconButton, Typography, Divider, CircularProgress, Button } from "@mui/material";
 import { ArrowBack as ArrowIcon, Bookmark as IconBookmarked, BookmarkBorder as IconBookmark, PlayArrow as PlayIcon } from "@mui/icons-material";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useActionData, Navigate } from "react-router-dom";
+import theme from "../../theme";
 import axios from "axios";
 
 const Definition  = () => {
   const { word } = useParams();
   const navigate = useNavigate();
   const [definitions, setDefinitions] = useState([]);
-  console.log(definitions);
+  const [loading, setLoading] = useState(true);
+  const [exist, setExist] = useState(true);
+ // console.log(definitions);
   
 
   useEffect(() => {
     const fetchDefinition = async () => {
-    const resp = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-    setDefinitions(resp.data);
+      try{
+        const resp = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        setDefinitions(resp.data);
+        setLoading(false);
+      } catch{
+        setExist(false);
+      }
     }
 
     fetchDefinition();
   }, []);
-
+    
+  if(!exist) return <Box sx={{...theme.mixins.setAllCenter}}>
+  <Typography variant="subtitle1">Word not found !</Typography>
+  <Button sx={{
+    mt:2,
+    background: theme => theme.palette.blue,
+    borderRadius: 2,
+    color: '#fff',}} onClick={() => navigate(-1)}>Go back !</Button>
+  </Box>
+  if(loading) return <Box sx={{...theme.mixins.setAllCenter}}><CircularProgress/></Box>
     return (
     <>
       <Stack direction="row" justifyContent="space-between">
-        <IconButton onClick={() => navigate(-1)}>
+        <IconButton onClick={() => navigate(-1)} sx={{color: '#000'}}>
           <ArrowIcon />
         </IconButton>
-        <IconButton>
+        <IconButton sx={{color: '#000'}}>       
           <IconBookmark/>
         </IconButton>
       </Stack>
@@ -35,7 +52,7 @@ const Definition  = () => {
         mb: 3,
         px: 3,
         py: 5,
-        background: 'linear-gradient(90.08deg,rgb(20, 15, 149) 14%,rgb(11, 5, 66) 95.83%)',
+        background: theme => theme.palette.blue,
         borderRadius: 2,
         color: '#fff',
       }}>

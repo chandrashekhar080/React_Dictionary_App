@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, FilledInput, IconButton } from "@mui/material";
 import { Search, Bookmark } from "@mui/icons-material";
+import theme from "../../theme";
 
 const Home = () => {
   const [word, setWord ] = useState("") 
@@ -15,13 +16,7 @@ const Home = () => {
     navigate(`/search/${word}`);
   };
   return (
-     <Box sx={{
-      display:'flex',
-      flexDirection:'column',
-      alignItems:'center',
-      justifyContent:'center',
-      height:'100vh',
-     }}>
+     <Box sx={{ ...theme.mixins.setAllCenter}}>
       <img src="/assets/book.png" alt="Book"/>
       <Typography color='primary'
       sx={{
