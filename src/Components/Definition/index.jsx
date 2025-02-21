@@ -30,7 +30,7 @@ const Definition  = () => {
           <IconBookmark/>
         </IconButton>
       </Stack>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" AlignItems='center' sx={{
+      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{
         mt: 3,
         mb: 3,
         px: 3,
@@ -49,7 +49,7 @@ const Definition  = () => {
       </Stack>
         {definitions.map((def, idx) => 
           <Fragment key={idx}>
-          <Divider />
+          <Divider sx={{my:3}} />
           {def.meanings.map(meaning =>
             <Box key={meaning.partOfSpeech} sx={{
               background: '#fff',
@@ -58,10 +58,10 @@ const Definition  = () => {
               borderRadius: 2,
               boxShadow: '0 10px 25px rgba(0, 0, 0, 0.05)',
             }}>
-              <Typography variant="subtitle1">{meaning.partOfSpeech}</Typography>
+              <Typography variant="subtitle1" textTransform="capitalize" color="primary">{meaning.partOfSpeech}</Typography>
               {meaning.definitions.map((definition, idx) =>
-                <Typography key={definition.definition}>
-                {definitions.length > 1 && `${idx + 1}. `}{definition.definition}
+                <Typography key={definition.definition} sx={{my:1}}>
+                {meaning.definitions.length > 1 && `${idx + 1}. `}{definition.definition}
                 </Typography>
               )}
              
