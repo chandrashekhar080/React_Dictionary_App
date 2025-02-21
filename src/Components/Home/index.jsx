@@ -10,9 +10,9 @@ const Home = () => {
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
     console.log("Form submitted!");
-    const trimword = word.trim();
+    const trimword = word.trim().toLowerCase();
     if(!trimword || trimword.split(' ').length > 1) return
-    navigate(`/search/:${word}`);
+    navigate(`/search/${word}`);
   };
   return (
      <Box sx={{
@@ -63,7 +63,7 @@ const Home = () => {
         borderRadius: 2,
         p: 2,
         my: 3,
-        background:'linear-gradient(138.72deg,rgb(186, 50, 80) 0%,rgb(202, 13, 45) 95.83%)',
+        background: theme => theme.palette.pink,
         boxShadow:'0px 10px 10px rgba(182, 66, 87, 0.2)',
       }}>
         <Bookmark/>
