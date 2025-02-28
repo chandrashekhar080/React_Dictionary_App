@@ -1,26 +1,29 @@
 import { useEffect, useState, Fragment } from "react";
 import { Stack, Box, IconButton, Typography, Divider, CircularProgress, Button } from "@mui/material";
-import { ArrowBack as ArrowIcon, Bookmark as IconBookmarked, BookmarkBorder as IconBookmark, PlayArrow as PlayIcon } from "@mui/icons-material";
-import { useParams, useNavigate, useActionData, Navigate } from "react-router-dom";
+import { ArrowBack as ArrowIcon, BookmarkBorder as IconBookmark, Bookmark as IconBookmarked, PlayArrow as PlayIcon } from "@mui/icons-material";
+import { useParams, useNavigate } from "react-router-dom";
 import theme from "../../theme";
 import axios from "axios";
 
-const Definition  = () => {
+const Definition  = ({bookmarks, addBookmark, removeBookmark}) => {
   const { word } = useParams();
   const navigate = useNavigate();
   const [definitions, setDefinitions] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [exist, setExist] = useState(true);
+  const [audio, setAudio] = useState(null);
  // console.log(definitions);
-  
+  const isBookmarked = Object.keys(bookmarks).includes(word);
 
   useEffect(() => {
     const fetchDefinition = async () => {
       try{
         const resp = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
         setDefinitions(resp.data);
-        setLoading(false);
-      } catch{
+        const phonetics = resp.data[0].phonetics
+        if(!phonetics.length) return;
+        const url = phonetics[0].audio.replace('//ssl', 'https://ssl');
+        setAudio(new Audio(url));
+      } catch(err) {
         setExist(false);
       }
     }
@@ -36,15 +39,15 @@ const Definition  = () => {
     borderRadius: 2,
     color: '#fff',}} onClick={() => navigate(-1)}>Go back !</Button>
   </Box>
-  if(loading) return <Box sx={{...theme.mixins.setAllCenter}}><CircularProgress/></Box>
+  if(!definitions.length) return <Box sx={{...theme.mixins.setAllCenter}}><CircularProgress/></Box>
     return (
     <>
       <Stack direction="row" justifyContent="space-between">
         <IconButton onClick={() => navigate(-1)} sx={{color: '#000'}}>
           <ArrowIcon />
         </IconButton>
-        <IconButton sx={{color: '#000'}}>       
-          <IconBookmark/>
+        <IconButton sx={{color: '#000'}} onClick={() => isBookmarked ? removeBookmark(word) : addBookmark(word, definitions)}> 
+         {isBookmarked ? <IconBookmarked sx={{color:"black"}}/> : <IconBookmark sx={{color:"black"}}/>}
         </IconButton>
       </Stack>
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{
@@ -57,12 +60,12 @@ const Definition  = () => {
         color: '#fff',
       }}>
         <Typography variant="h5" sx={{textTransform:'capitalize'}}>{word}</Typography>
-        <IconButton sx={{
+        {audio && <IconButton onClick={() => audio.play()} sx={{
           background: theme => theme.palette.pink,
           color: '#fff',
         }}>
           <PlayIcon />
-        </IconButton>
+        </IconButton>}
       </Stack>
         {definitions.map((def, idx) => 
           <Fragment key={idx}>

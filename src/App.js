@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import theme from './theme'
 //
 import { ThemeProvider } from "@mui/material/styles";
@@ -11,6 +13,13 @@ import Bookmark from "./Components/Bookmark";
 import Definition from './Components/Definition';
 
 const App = () => {
+  const [bookmarks, setBookmark] = useState({});
+  console.log(bookmarks);
+  
+
+  const addBookmark = (word, definitions) => setBookmark(oldBookmarks => ({...oldBookmarks, [word]: definitions}));
+  const removeBookmark = (word) => setBookmark(oldBookmarks => {const temp = {...oldBookmarks}; delete temp[word]; return temp;});
+
   return (
     <Router>
     <ThemeProvider theme={theme}>
@@ -22,7 +31,7 @@ const App = () => {
         </Route>
         <Route path="/Bookmark" element={ <Bookmark />}>
         </Route>
-        <Route path='/search/:word' element={ <Definition />}>
+        <Route path='/search/:word' element={ <Definition bookmarks={bookmarks} addBookmark={addBookmark} removeBookmark={removeBookmark}/>}>
         </Route>
       </Routes>
     </Grid2>
