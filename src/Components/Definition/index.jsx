@@ -14,21 +14,27 @@ const Definition  = ({bookmarks, addBookmark, removeBookmark}) => {
  // console.log(definitions);
   const isBookmarked = Object.keys(bookmarks).includes(word);
 
+  const updateState = data => {
+    setDefinitions(data);
+    const phonetics = data[0].phonetics
+    if(!phonetics.length) return;
+    const url = phonetics[0].audio.replace('//ssl', 'https://ssl');
+    setAudio(new Audio(url));
+  }
+
+
   useEffect(() => {
     const fetchDefinition = async () => {
       try{
         const resp = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-        setDefinitions(resp.data);
-        const phonetics = resp.data[0].phonetics
-        if(!phonetics.length) return;
-        const url = phonetics[0].audio.replace('//ssl', 'https://ssl');
-        setAudio(new Audio(url));
+         updateState(resp.data);
       } catch(err) {
         setExist(false);
       }
     }
 
-    fetchDefinition();
+   if(!isBookmarked) fetchDefinition()
+    else updateState(bookmarks[word]);
   }, []);
     
   if(!exist) return <Box sx={{...theme.mixins.setAllCenter}}>
