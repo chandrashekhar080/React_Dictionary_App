@@ -1,42 +1,40 @@
-import { Stack, Typography, IconButton, Box } from '@mui/material';
-import { ArrowBack as BackIcon} from '@mui/icons-material';
-import { Link } from 'react-router-dom';
-
-const updateBookmark = b => {
-  <Box key={b} component={Link} to={`search/${b}`} sx={{
-      backgroundColor:'white',
-      color:'#000',
-      borderRadius: 2,
-      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.05)',
-      p: 2,
-      fontWeight: 700,
-      display: 'block',
-      textDecoration: 'none',
-    }}>
-      {b}
-    </Box>
-}
-
+import { Stack, IconButton, Typography, Box } from '@mui/material'
+import { ArrowBack as BackIcon } from '@mui/icons-material'
+import { Link } from 'react-router-dom'
 
 const Bookmarks = ({ bookmarks }) => {
-  return (
-    <>
-      <Stack direction={'row'} alignItems={'center'} sx={{mb: 3}}>
-        <IconButton LinkComponent={Link} to="/Bookmark" sx={{color: '#000'}}>
-          <BackIcon />
-        </IconButton>
-        <Typography variant='h6'>
-          Bookmarks
-        </Typography>
-      </Stack>
-      {Object.keys(bookmarks).map(b => 
-        updateBookmark(b)
-      )
-      }
-    </>
-)
+    return (
+        <>
+            <Stack sx={{ mb: 2 }} direction="row" alignItems="center">
+                <IconButton to="/" component={Link} sx={{ color: 'black', mr: 1 }}>
+                    <BackIcon />
+                </IconButton>
+                <Typography variant="h6">
+                    Bookmarks
+                </Typography>
+            </Stack>
+            {
+                !!Object.keys(bookmarks).length ?
+                    Object.keys(bookmarks).map(b =>
+                        <Box key={b} to={`/search/${b}`} component={Link} sx={{
+                            p: 2,
+                            cursor: 'pointer',
+                            backgroundColor: 'white',
+                            borderRadius: 1,
+                            textTransform: 'capitalize',
+                            mb: 2,
+                            fontWeight: 800,
+                            display: 'block',
+                            color: 'black',
+                            textDecoration: 'none'
+                        }}>
+                            {b}
+                        </Box>)
+
+                    : <Typography sx={{ mt: 5 }} align="center">No Bookmarks</Typography>
+            }
+        </>
+    )
 }
 
-
-
-export default Bookmarks;
+export default Bookmarks
